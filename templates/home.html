@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Hi there from Template</h1>
+
+    {% for question in questions %}
+        <div>
+            <h2><a href="{% url 'question-detail' question.pk %}">{{ question.text }}</a></h2>
+            <button class="btn btn-warning"><a class="text-decoration-none text-white" href="{% url 'question-update' question.pk %}">Update</a></button>
+            <button class="btn btn-danger"><a class="text-decoration-none text-white" href="{% url 'question-delete' question.pk %}">Delete</a></button>
+            <ul>
+                {% for option in question.option_set.all %}
+                    <li>
+                        {{ option.text }} has {{ option.votes }} votes
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    <div class="mx-auto text-center">
+        {% for page_number in page_obj.paginator.get_elided_page_range %}
+          {% if page_number == page_obj.paginator.ELLIPSIS %}
+              {{ page_number }}
+          {% else %}
+              <a
+                      href="{% url 'home' %}?page={{ page_number }}&q={{ request.GET.q }}"
+                      class="{% if page_number == page_obj.number %}current{% endif %} btn btn-primary    "
+              >
+                  {{ page_number }}
+              </a>
+          {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
